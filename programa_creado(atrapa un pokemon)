@@ -1,0 +1,97 @@
+const int TRIGG = PA10;
+const int ECHO = PA8;
+const int led = PC13;
+const int led2 = PA4;
+const int led3 = PA5;
+const int led4 = PA6;
+const int zumb = PA7;
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(TRIGG, OUTPUT);
+  pinMode(ECHO, INPUT);
+  pinMode(led, OUTPUT);
+  pinMode(led2, OUTPUT);
+  pinMode(zumb, OUTPUT);
+
+ 
+}
+
+int cap;
+
+void captura(){
+
+  int cm = ping(TRIGG, ECHO);
+  cap = cm;
+  sec();  
+}
+
+void sec(){
+
+  if(cap > 30 && cap > 2000)
+  {
+      Serial.println("Un pokemon salvaje aparece, cuidado procure mantener distancia hasta que se gane su confianza"); 
+  }
+  
+  
+  if(cap > 20 && cap < 30)
+  {
+    bool act = true;
+    Serial.println("Al aprecer al pokemon no le importa su presencia..."); 
+    delay(10000);
+    act = false;
+    if(act != true)
+    {
+      Serial.println("!Oh¡, al parecer el pokemon se interesa por su presencia");
+      delay(3000);
+      if(cap < 20 && cap > 5)
+      {
+        Serial.println("!Qué bien, se ha ganado la confianza de un pokemon, ya puede hacer sancocho de pokemon");
+        delay(100000);
+      }
+      else
+      {
+        Serial.println("!Oh vaya¡, el pokemon se ha ido...");
+        delay(1000000);
+      }
+    }
+  }  
+  else if(cap < 15 && cap > 10)
+      {
+        Serial.println("El pokemon lo ataca y le quita el brazo de un mordisco");
+        Serial.println("La muerte por perdida de sangre es inevitable...");
+        Serial.println("Es el fin...");
+        digitalWrite(led2, HIGH);
+        delay(3000);
+      }
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  digitalWrite(zumb, LOW );
+  digitalWrite(led, LOW);
+  digitalWrite(led4, LOW);
+  digitalWrite(led3, LOW);
+  digitalWrite(led2, LOW);
+  
+  captura();
+  
+}
+
+int ping(int TRIGG, int ECHO) {
+  long duration, distanceCm;
+  
+  digitalWrite(TRIGG, LOW);  
+  delayMicroseconds(2);
+  digitalWrite(TRIGG, HIGH);  
+  delayMicroseconds(10);
+  digitalWrite(TRIGG, LOW);
+  
+  duration = pulseIn(ECHO, HIGH);  
+  
+  distanceCm = duration * 10 / 292/ 2;   
+
+  return distanceCm;
+}
